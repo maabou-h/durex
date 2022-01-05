@@ -136,6 +136,10 @@ void		_rundurex(char **envp)
 			while (i < MAXCLIENTS)
 			{
 				if (durex.client[i].pid > 0)
+				{
+					if (kill(durex.client[i].pid, 0) == -1)
+						durex.client[i].status = LOGGED;
+				}
 					_shchk(&durex.client[i]);
 				if (durex.client[i].status != IN_SHELL)
 				{
