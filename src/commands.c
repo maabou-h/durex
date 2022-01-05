@@ -61,7 +61,7 @@ int	_shlaunch(struct s_client *client) {
 	else
 	{
 		close(client->fd);
-		printf("durex: spawned shell (%d)\n", pid);
+		printf("durex: spawned shell (%d)\n", client->pid);
 		client->status = IN_SHELL;
 		client->pid = pid;
 	}
