@@ -34,16 +34,17 @@
 # define EDUPSHELL		"Cannot dup fds, cannot spawn shell\n"
 # define EFORKSHELL		"Cannot fork, cannot spawn shell\n"
 
+t_ctx					durex;
 typedef struct s_ctx	t_ctx;
 
-struct					__attribute__((packed, aligned(4))) s_client
+struct					s_client
 {
 	int 				fd;
 	int 				status;
 	int 				pid;
 };
 
-struct					__attribute__((packed, aligned(4))) s_ctx
+struct					s_ctx
 {
 	int 				msock;
 	int 				mport;
@@ -53,7 +54,6 @@ struct					__attribute__((packed, aligned(4))) s_ctx
 	struct s_client		client[MAXCLIENTS];
 };
 
-t_ctx					durex;
 
 /*
 						commands.c -> remote shell functions
