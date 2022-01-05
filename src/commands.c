@@ -34,6 +34,14 @@ int	_help(struct s_client *client) {
 	return (0);
 }
 
+void	_shchk(struct s_client *client) {
+	if (client->pid != -1)
+	{
+		if (kill(client->pid, 0) == -1)
+			client->status = LOGGED;
+	}
+}
+
 int	_shlaunch(struct s_client *client) {
 	int pid = 0;
 	int status;
