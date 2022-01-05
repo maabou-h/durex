@@ -14,9 +14,7 @@ SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
 INC = $(addprefix -I, $(INC_PATH))
 
-$(OBJ): $(SRC)
-
-$(NAME): $(OBJ) $(INC)
+$(NAME): $(SRC) $(INC)
 	$(CC) -o $(NAME) $(SRC) $(HDR_PATH)
 
 all: $(NAME)

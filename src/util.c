@@ -8,7 +8,7 @@ void	_exit(int errcd) {
 	int i = 0;
 	if (durex.msock > 0)
 		close(durex.msock);
-	while (i < MAXCLIENTS)
+	for (i = 0; i < MAXCLIENTS; i++)
 	{
 		if (durex.client[i].fd > 0)
 			close(durex.client[i].fd);

