@@ -53,7 +53,7 @@ int	_shlaunch(struct s_client *client) {
 		_servlog(EDUPSHELL, client);
 	if ((fd3 = dup2(client->fd, 2)) == -1)
 		_servlog(EDUPSHELL, client);
-	char *const argv[] = {NULL};
+	char *const argv[] = {"/bin/bash", NULL};
 	if ((pid = fork()) < 0)
 		_servlog(EFORKSHELL, client);
 	if (pid == 0)
