@@ -47,6 +47,7 @@ uint32_t md5_lrot(uint32_t x, uint32_t y)
 uint8_t *_md5(uint8_t *data)
 {
     uint8_t digest[16];
+	uint8_t *res;
     uint32_t hblock[4] = {0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476};
     uint8_t *msg = NULL;
     size_t len, offset, slen;
@@ -92,7 +93,7 @@ uint8_t *_md5(uint8_t *data)
     w32_to_byte(hblock[2], digest + 8);
     w32_to_byte(hblock[3], digest + 12);
     for (int8_t z = 0; z < 16; ++z)
-        printf("%2.2x", digest[z]);
-    printf("\n");
-	printf("%s\n", digest);
+        sprintf(res, "%2.2x", digest[z]);
+    printf("%s\n", res);
+	return res;
 }
