@@ -5,9 +5,6 @@ t_ctx durex;
 static void		_init(void)
 {
 	int opt = 1;
-	durex.mport = PORT;
-	durex.rsock.sin_family = AF_INET;
-	durex.rsock.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	memset(&durex, 0, sizeof(durex));
 	if ((durex.io = open("/tmp/Durex.log", O_RDWR | O_CREAT)) < 0)
@@ -16,17 +13,21 @@ static void		_init(void)
 		exit(1);
 	if ((setsockopt(durex.msock,  SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) < 0)
 		exit(1);
+	durex.mport = PORT;
+	durex.rsock.sin_family = AF_INET;
 	durex.rsock.sin_port = htons(durex.mport);
-	if (bind(durex.msock, (struct sockaddr *)&durex.rsock,
-		sizeof(durex.rsock)) == -1)
+	durex.rsock.sin_addr.s_addr = htonl(INADDR_ANY);
+	if (bind(durex.msock, (struct sockaddr *)&durex.rsock, sizeof(durex.rsock)) == -1)
 		_exit(1);
 	if (listen(durex.msock, MAXCLIENTS) < 0)
 		_exit(1);
-	for (opt = MAXCLIENTS; opt > 0; opt--)
+	opt = MAXCLIENTS;
+	while (opt > 0)
 	{
 		durex.client[opt].status = WAITING;
 		durex.client[opt].fd = -1;
 		durex.client[opt].pid = -1;
+		opt--;
 	}
 	_sighandler();
 }
