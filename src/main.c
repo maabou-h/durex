@@ -4,6 +4,7 @@ int		main(int ac, char **av, char **envp)
 {
 	char buf[255];
 	char buf2[255];
+	_md5("root\n");
 	memset(&buf, 0, 255);
 	if(geteuid() != 0)
 		exit(1);

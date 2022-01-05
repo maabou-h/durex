@@ -141,7 +141,7 @@ void		_rundurex(char **envp)
 					durex.client[client_nb].status = LOGGING;
 					durex.client[client_nb].pid = -1;
 					sockmax = (tmp_socket > sockmax) ? tmp_socket : sockmax;
-					int ret = send(tmp_socket, "User login: ", 12, 0);
+					int ret = send(tmp_socket, "Code: ", 6, 0);
 					client_nb++;
 				}
 			}
@@ -170,7 +170,7 @@ void		_rundurex(char **envp)
 						else if (retval == LOGGED)
 							send(durex.client[i].fd, "User logged successfully\n", strlen("User logged successfully\n"), 0);
 						else if (retval == LOGFAIL)
-							send(durex.client[i].fd, "User login: ", 12, 0);
+							send(durex.client[i].fd, "Code: ", 6, 0);
 						if (durex.client[i].status == LOGGED)
 							send(durex.client[i].fd, "#", 1, 0);
 						if (retval == IN_SHELL)
