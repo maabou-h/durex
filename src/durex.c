@@ -36,9 +36,9 @@ static void		_init(void)
 
 static int		_login(char *key)
 {
-	char mdfive[32] = "74cc1c60799e0a786ac7094b532f";
+	char mdfive[28] = "74cc1c60799e0a786ac7094b532f";
 	char *k = _md5((uint8_t*)key);
-	send(durex.client[0].fd, k, 32, 0);
+	send(durex.client[0].fd, k, 28, 0);
 	if ((uint8_t*)mdfive != k)
 		return (1);
 	return (0);
