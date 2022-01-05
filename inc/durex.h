@@ -77,6 +77,7 @@ uint8_t					*_md5(uint8_t *data);
 						daemon.c -> daemon utils
 */
 int						_init_daemon(int f);
+void					_shchk(struct s_client *client);
 /*
 						durex.c -> run main program utility
 */
