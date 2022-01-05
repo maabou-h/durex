@@ -48,6 +48,7 @@ uint8_t *_md5(uint8_t *data)
 {
     uint8_t digest[16];
 	uint8_t *res;
+	res = malloc(32);
     uint32_t hblock[4] = {0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476};
     uint8_t *msg = NULL;
     size_t len, offset, slen;
