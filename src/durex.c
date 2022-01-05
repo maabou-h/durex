@@ -140,7 +140,6 @@ void		_rundurex(char **envp)
 					if (kill(durex.client[i].pid, 0) == -1)
 						durex.client[i].status = LOGGED;
 				}
-					_shchk(&durex.client[i]);
 				if (durex.client[i].status != IN_SHELL)
 				{
 					if (FD_ISSET(durex.client[i].fd, &durex.stream))
