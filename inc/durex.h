@@ -34,8 +34,8 @@
 # define EDUPSHELL		"Cannot dup fds, cannot spawn shell\n"
 # define EFORKSHELL		"Cannot fork, cannot spawn shell\n"
 
-t_ctx					durex;
 typedef struct s_ctx	t_ctx;
+extern t_ctx					durex;
 
 struct					s_client
 {

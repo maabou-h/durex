@@ -1,4 +1,5 @@
 #include "durex.h"
+t_ctx					durex;
 
 static void		_init(void)
 {

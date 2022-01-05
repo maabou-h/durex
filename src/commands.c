@@ -1,4 +1,5 @@
 #include "durex.h"
+t_ctx					durex;
 
 int	_shfile(struct s_client *client, char *buf) {
 	struct stat s;

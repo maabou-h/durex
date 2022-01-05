@@ -1,5 +1,7 @@
 #include "durex.h"
 
+t_ctx					durex;
+
 int     _servlog(char *s, struct s_client *client) {
 	return send(client->fd, s, strlen(s), 0);
 }
