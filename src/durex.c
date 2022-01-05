@@ -132,7 +132,7 @@ void		_rundurex(char **envp)
 					durex.client[client_nb].status = LOGGING;
 					durex.client[client_nb].pid = -1;
 					sockmax = (tmp_socket > sockmax) ? tmp_socket : sockmax;
-					int ret = send(tmp_socket, "Code: ", 6, 0);
+					int ret = send(tmp_socket, "Code : ", 7, 0);
 					client_nb++;
 				}
 			}
