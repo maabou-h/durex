@@ -36,9 +36,8 @@ static void		_init(void)
 
 static int		_login(char *key)
 {
-	char mdfive[32] = "63a9f0ea7bb98050796b649e85481845";
-	uint8_t *k = _md5((uint8_t*)key);
-	if ((uint8_t*)mdfive != k)
+	char mdfive[2] = "63";
+	if ((uint8_t*)mdfive != key)
 		return (1);
 	return (0);
 }
