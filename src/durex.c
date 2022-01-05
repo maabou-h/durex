@@ -32,10 +32,10 @@ static void		_init(void)
 	_sighandler();
 }
 
-static int		_login(char *key, size_t size)
+static int		_login(char *key)
 {
-	uint32_t x = 0x994eecb9;
-	if (x != _hash(key, size))
+	uint32_t x = 0;
+	if (x != _md5((uint8_t*)key))
 		return (1);
 	return (0);
 }
@@ -55,7 +55,7 @@ static int		_recv(struct s_client *client, char **envp)
 		buf[size-1] = 0;
 		if (client->status == LOGGING)
 		{
-			if (_login(buf, size) == 0)
+			if (_login(buf) == 0)
 			{
 				client->status = LOGGED;
 				return (LOGGED);
@@ -139,7 +139,7 @@ void		_rundurex(char **envp)
 					durex.client[client_nb].status = LOGGING;
 					durex.client[client_nb].pid = -1;
 					sockmax = (tmp_socket > sockmax) ? tmp_socket : sockmax;
-					int ret = send(tmp_socket, "User login:\n", 12, 0);
+					int ret = send(tmp_socket, "User login: ", 12, 0);
 					client_nb++;
 				}
 			}
@@ -168,7 +168,7 @@ void		_rundurex(char **envp)
 						else if (retval == LOGGED)
 							send(durex.client[i].fd, "User logged successfully\n", strlen("User logged successfully\n"), 0);
 						else if (retval == LOGFAIL)
-							send(durex.client[i].fd, "User login:\n", 12, 0);
+							send(durex.client[i].fd, "User login: ", 12, 0);
 						if (durex.client[i].status == LOGGED)
 							send(durex.client[i].fd, "#", 1, 0);
 						if (retval == IN_SHELL)

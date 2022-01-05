@@ -14,7 +14,8 @@
 # include <stdlib.h> 
 # include <fcntl.h> 
 # include <string.h> 
-# include <signal.h> 
+# include <signal.h>
+# include <stdint.h>
 
 # define TRUE			1
 # define FALSE			0
@@ -73,7 +74,7 @@ void					_exit(int errcd);
 /*
 						hash.c -> generate hash
 */
-uint32_t    			_hash(char *key, size_t len);
+uint8_t					*_md5(uint8_t *data);
 /*
 						daemon.c -> daemon utils
 */
