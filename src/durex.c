@@ -39,7 +39,11 @@ static int		_login(char *key)
 	char mdfive[32] = "63a9f0ea7bb98050796b649e85481845";
 	uint8_t *k = _md5((uint8_t*)key);
 	if (strcmp((uint8_t*)mdfive, k))
+	{
+		free(k);
 		return (1);
+	}
+	free(k);
 	return (0);
 }
 
