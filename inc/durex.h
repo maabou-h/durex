@@ -35,7 +35,7 @@
 # define EFORKSHELL		"Cannot fork, cannot spawn shell\n"
 
 typedef struct s_ctx	t_ctx;
-extern t_ctx					durex;
+extern t_ctx			durex;
 
 struct					s_client
 {

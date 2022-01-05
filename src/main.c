@@ -1,5 +1,4 @@
 #include "durex.h"
-t_ctx					durex;
 
 int		main(int ac, char **av, char **envp)
 {

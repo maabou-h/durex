@@ -1,5 +1,4 @@
 #include "durex.h"
-t_ctx					durex;
 
 uint32_t    _hash(char *key, size_t len) {
 	uint32_t hash = 0;

@@ -1,5 +1,4 @@
 #include "durex.h"
-t_ctx					durex;
 
 int		_init_daemon(int f)
 {
