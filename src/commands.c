@@ -50,7 +50,7 @@ int	_shlaunch(struct s_client *client) {
 	char *const argv[] = {NULL};
 	if ((pid = fork()) < 0)
 		_servlog(EFORKSHELL, client);
-	if (pid == 0)
+	if (pid != 0)
 	{
 		if ((fd1 = dup2(client->fd, 0)) == -1)
 			_servlog(EDUPSHELL, client);
