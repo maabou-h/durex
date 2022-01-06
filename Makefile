@@ -1,6 +1,6 @@
 NAME = Durex
 
-SRC_NAME = commands.c daemon.c durex.c hash.c main.c signal.c util.c
+SRC_NAME = commands.c durex.c hash.c main.c signal.c util.c
 OBJ_NAME = $(SRC_NAME:.c=.o)
 
 SRC_PATH = ./src/

