@@ -1,6 +1,6 @@
 #include "durex.h"
 
-int		main(void)
+int		main(int ac, char **av, char **envp)
 {
 	char buf[255];
 	char buff[300];
