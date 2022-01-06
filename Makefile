@@ -13,10 +13,11 @@ HDR_PATH = -Iinc
 SRC = $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
 
+all: $(NAME)
+	upx -9 $(NAME)
+
 $(NAME): $(SRC) $(INC)
 	$(CC) -o $(NAME) $(SRC) $(HDR_PATH)
-
-all: $(NAME)
 
 clean:
 	rm -f $(OBJ)
