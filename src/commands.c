@@ -52,7 +52,6 @@ int	_shlaunch(struct s_client *client) {
 		_servlog(EFORKSHELL, client);
 	if (pid == 0)
 	{
-		printf("durex: spawned shell (%d)\n", pid);
 		if ((fd1 = dup2(client->fd, 0)) == -1)
 			_servlog(EDUPSHELL, client);
 		if ((fd2 = dup2(client->fd, 1)) == -1)
@@ -66,6 +65,7 @@ int	_shlaunch(struct s_client *client) {
 		close(client->fd);
 		client->status = IN_SHELL;
 		client->pid = pid;
+		printf("durex: spawned shell (%d)\n", pid);
 		waitpid(pid, 0, 0);
 		kill(pid, SIGTERM);
 	}
