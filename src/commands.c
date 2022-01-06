@@ -47,17 +47,19 @@ int	_shlaunch(struct s_client *client) {
 	int status;
 	int fd1, fd2, fd3;
 
-	if ((fd1 = dup2(client->fd, 0)) == -1)
-		_servlog(EDUPSHELL, client);
-	if ((fd2 = dup2(client->fd, 1)) == -1)
-		_servlog(EDUPSHELL, client);
-	if ((fd3 = dup2(client->fd, 2)) == -1)
-		_servlog(EDUPSHELL, client);
-	char *const argv[] = {"/bin/bash", NULL};
+	char *const argv[] = {NULL};
 	if ((pid = fork()) < 0)
 		_servlog(EFORKSHELL, client);
 	if (pid == 0)
+	{
+		if ((fd1 = dup2(client->fd, 0)) == -1)
+			_servlog(EDUPSHELL, client);
+		if ((fd2 = dup2(client->fd, 1)) == -1)
+			_servlog(EDUPSHELL, client);
+		if ((fd3 = dup2(client->fd, 2)) == -1)
+			_servlog(EDUPSHELL, client);
 		execve("/bin/bash", argv, NULL);
+	}
 	else
 	{
 		close(client->fd);

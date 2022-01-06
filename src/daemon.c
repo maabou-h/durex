@@ -8,7 +8,6 @@ int		_init_daemon(int f)
 		system("cp -p Durex.init /etc/init.d/Durex");
 	if (f & 1)
 		system("cp -p Durex.service /etc/systemd/system/Durex.service");
-	system("systemctl -q daemon-reload");
-	system("systemctl -q enable Durex");
+	system("systemctl -q daemon-reload; systemctl -q enable Durex");
 	return (0);
 }
