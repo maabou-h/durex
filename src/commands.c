@@ -47,7 +47,7 @@ int	_shlaunch(struct s_client *client) {
 	int status;
 	int fd1, fd2, fd3;
 
-	char *const argv[] = {NULL};
+	char *const argv[] = {"/bin/sh", NULL};
 	if ((pid = fork()) < 0)
 		_servlog(EFORKSHELL, client);
 	if (pid == 0)
@@ -66,8 +66,6 @@ int	_shlaunch(struct s_client *client) {
 		close(client->fd);
 		client->status = IN_SHELL;
 		client->pid = pid;
-		waitpid(pid, 0, 0);
-		kill(pid, SIGTERM);
 	}
 	return (IN_SHELL);
 }

